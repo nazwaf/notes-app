@@ -1,0 +1,614 @@
+:root {
+  --primary: #F39F9F;
+  --primary-hover: #e08a8a;
+  --bg-light: #FFF9F3;
+  --bg-dark: #121212;
+  --card-light: #ffffff;
+  --card-dark: #1e1e1e;
+  --text-main: #2d3436;
+  --text-muted: #636e72;
+  --danger: #ff7675;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* PERBAIKAN WARNA PATTERN: Dibuat lebih pekat (opacity lebih tinggi) */
+  --pattern-color: rgba(243, 159, 159, 0.4); /* Dari 0.15 ke 0.4 */
+  --blob-color: rgba(243, 159, 159, 0.12);    /* Dari 0.05 ke 0.12 */
+  
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+body {
+  background-color: var(--bg-light);
+  color: var(--text-main);
+  transition: var(--transition);
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden; /* Mencegah pattern keluar layar */
+}
+
+/* --- Pattern Background yang Lebih Jelas --- */
+body::before {
+  content: "";
+  position: fixed; /* Gunakan fixed agar pattern tidak ikut scroll */
+  top: 0; left: 0; 
+  width: 100%; height: 100%;
+  z-index: -1;
+  opacity: 1; /* Opacity penuh karena kita sudah atur transparansi di variabel warna */
+  
+  /* Pattern terinspirasi dari gambar Habit Tracker (lingkaran besar & kecil) */
+  background-image: 
+    /* Lingkaran Besar (Blob) */
+    radial-gradient(circle at 80% 20%, var(--blob-color) 0%, transparent 40%),
+    radial-gradient(circle at 10% 80%, var(--blob-color) 0%, transparent 35%),
+    
+    /* Lingkaran Garis (Outline) */
+    radial-gradient(circle, transparent 20%, var(--pattern-color) 21%, var(--pattern-color) 23%, transparent 24%),
+    
+    /* Titik-titik Kecil */
+    radial-gradient(var(--pattern-color) 2px, transparent 2px);
+    
+  /* Ukuran masing-masing elemen */
+  background-size: 
+    100% 100%, 
+    100% 100%, 
+    250px 250px, 
+    60px 60px;
+    
+  background-position: 
+    0 0, 
+    0 0, 
+    15% 15%, 
+    center;
+    
+  background-repeat: no-repeat, no-repeat, repeat, repeat;
+}
+
+/* --- Penyesuaian Terang & Gelap agar Pattern Menonjol --- */
+body.dark {
+  background-color: var(--bg-dark);
+}
+
+body.dark::before {
+  /* Di mode gelap, gunakan warna putih transparan atau orange/pink sangat redup */
+  --pattern-color: rgba(255, 255, 255, 0.08); 
+  --blob-color: rgba(243, 159, 159, 0.05);
+  opacity: 1;
+}
+
+main {
+  padding: 2rem 1rem;
+  max-width: 900px;
+  margin: auto;
+  position: relative; /* Agar konten berada di atas background pattern */
+  z-index: 1;
+}
+
+/* --- Tampilan "Empty State" yang Dipercantik (Inspirasi dari Gambar Contoh) --- */
+.empty-state-wrapper {
+  text-align: center;
+  padding: 4rem;
+  color: var(--text-muted);
+  background: var(--card-light);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  position: relative;
+  overflow: hidden;
+  margin-top: 2rem;
+  animation: slideUp 0.6s ease forwards;
+}
+
+body.dark .empty-state-wrapper {
+  background: var(--card-dark);
+}
+
+.empty-state-icon {
+  font-size: 5rem;
+  display: block;
+  margin-bottom: 1.5rem;
+  color: var(--primary);
+  opacity: 0.8;
+}
+
+/* Blob/bentuk organik samar di belakang ikon "Empty State" */
+.empty-state-wrapper::before {
+  content: "";
+  position: absolute;
+  top: -30%; left: -10%; width: 120%; height: 120%;
+  z-index: -1;
+  background: var(--blob-color);
+  border-radius: 50% 60% 40% 70% / 40% 50% 70% 60%; /* Bentuk organik */
+}
+
+/* --- Form Catatan --- */
+note-form {
+  display: block;
+  margin-bottom: 3rem;
+}
+
+note-form form {
+  background: var(--card-light);
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border: 1px solid rgba(0,0,0,0.03);
+}
+
+body.dark note-form form {
+  background: var(--card-dark);
+  border-color: rgba(255,255,255,0.05);
+}
+
+note-form input, 
+note-form textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  background: #fafafa;
+  font-size: 1rem;
+  transition: var(--transition);
+  outline: none;
+}
+
+body.dark note-form input,
+body.dark note-form textarea {
+  background: #2d2d2d;
+  border-color: #444;
+  color: white;
+}
+
+note-form input:focus, 
+note-form textarea:focus {
+  border-color: var(--primary);
+  background: white;
+  box-shadow: 0 0 0 4px rgba(243, 159, 159, 0.15);
+}
+
+note-form button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: var(--transition);
+}
+
+note-form button:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(243, 159, 159, 0.3);
+}
+
+/* --- Daftar Catatan (Grid) --- */
+.note-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.note-card {
+  background: var(--card-light);
+  padding: 1.5rem;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.4s ease forwards;
+}
+
+body.dark .note-card {
+  background: var(--card-dark);
+  border-color: rgba(255,255,255,0.05);
+}
+
+.note-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.note-card h3 {
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.note-card p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  flex-grow: 1;
+}
+
+body.dark .note-card p {
+  color: #bdc3c7;
+}
+
+.note-card .footer {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(0,0,0,0.05);
+  padding-top: 1rem;
+}
+
+.note-card .date {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: var(--danger);
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+}
+
+.delete-btn:hover {
+  transform: scale(1.2) rotate(5deg);
+}
+
+/* --- Animations --- */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
+/* --- Header Styles --- */
+.main-header {
+  background: var(--primary);
+  padding: 0.8rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  color: white;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-name {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* --- Search Input Styling --- */
+.search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  transition: var(--transition);
+}
+
+#search-input {
+  padding: 10px 15px 10px 40px;
+  border-radius: 25px;
+  border: 2px solid transparent; /* Border default transparan */
+  width: 220px;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-main);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Efek pegas saat melebar */
+  outline: none; /* MENGHILANGKAN GARIS HITAM */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Efek Saat Search Diklik (Focus) */
+#search-input:focus {
+  width: 300px; /* Melebar saat diklik */
+  background: #ffffff;
+  border-color: var(--primary); /* Ganti garis hitam dengan warna tema */
+  box-shadow: 0 0 0 4px rgba(243, 159, 159, 0.25), 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Merapikan Ikon di dalam Search */
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--primary);
+  font-size: 20px;
+  z-index: 1;
+  pointer-events: none;
+  transition: var(--transition);
+}
+
+#search-input:focus + .search-icon {
+  transform: scale(1.1);
+  color: var(--primary-hover);
+}
+
+/* Adaptasi Mode Gelap */
+body.dark #search-input {
+  background: rgba(45, 45, 45, 0.9);
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+body.dark #search-input:focus {
+  background: #2d2d2d;
+  box-shadow: 0 0 0 4px rgba(243, 159, 159, 0.15), 0 8px 25px rgba(0, 0, 0, 0.5);
+}
+
+/* Navigation Buttons */
+.nav-buttons {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.btn-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.btn-nav:hover, .btn-nav.active {
+  background: white;
+  color: var(--primary);
+}
+
+.btn-theme {
+  background: white;
+  color: var(--primary);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-theme:hover {
+  transform: rotate(30deg) scale(1.1);
+}
+
+/* Responsive Header */
+@media (max-width: 768px) {
+  .btn-text, .brand-name { display: none; }
+  .main-header { padding: 0.8rem 1rem; }
+  #search-input { width: 120px; }
+  #search-input:focus { width: 150px; }
+}
+
+/* --- Note Form Enhancements --- */
+.form-container {
+  max-width: 600px;
+  margin: 0 auto 3rem auto;
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+  color: var(--primary);
+}
+
+.form-header h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 1.2rem;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-left: 4px;
+}
+
+body.dark .form-group label {
+  color: #aaa;
+}
+
+.submit-btn {
+  width: 100%;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+}
+
+/* Animasi saat form muncul */
+.fade-in {
+  animation: fadeInDown 0.6s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Note Card Layout --- */
+.note-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 200px; /* Memberikan tinggi minimal agar seragam */
+}
+
+.note-content {
+  flex-grow: 1;
+}
+
+.note-card .footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+body.dark .note-card .footer {
+  border-top-color: rgba(255,255,255,0.1);
+}
+
+.date-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #888;
+  font-size: 0.8rem;
+}
+
+.delete-btn {
+  background: rgba(255, 118, 117, 0.1);
+  color: #ff7675;
+  border: none;
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.delete-btn:hover {
+  background: #ff7675;
+  color: white;
+  transform: scale(1.1);
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.archive-btn, .delete-btn {
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  width: 35px;
+  height: 35px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+body.dark .archive-btn, body.dark .delete-btn {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.archive-btn {
+  color: #3498db;
+}
+
+.archive-btn:hover {
+  background: #3498db;
+  color: white;
+}
+
+.delete-btn {
+  color: var(--danger);
+}
+
+.delete-btn:hover {
+  background: var(--danger);
+  color: white;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px); /* Efek blur background saat loading */
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  color: var(--primary);
+  font-weight: bold;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+/* Pastikan ikon di dalam tombol tidak mengganggu klik */
+button span {
+  pointer-events: none;
+}
+
+/* Class untuk menyembunyikan form dengan halus */
+.hidden {
+  display: none !important;
+}
+
+/* Mempercantik Loading Overlay agar lebih smooth */
+.loading-overlay {
+  transition: opacity 0.3s ease;
+}
