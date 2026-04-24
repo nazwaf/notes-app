@@ -43,7 +43,7 @@ NoteApp adalah aplikasi manajemen catatan berbasis web yang dirancang dengan ant
 
 1.  **Clone Repositori**
     ```bash
-   git clone (https://github.com/nazwaf/notes-app.git)
+    git clone (https://github.com/nazwaf/notes-app.git)
     ```
 
 2.  **Masuk ke Direktori**
